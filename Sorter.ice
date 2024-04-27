@@ -1,21 +1,18 @@
-module Demo
-{
+#pragma once
 
-    interface MergeSort{
-        int[] mergeSort(int[] items);
-    }
+module Demo {
+    sequence<int> IntArray;
 
-    interface QuickSort{
-        int[] quickSort(int[] items);
-    }
+    class SortResult {
+        IntArray data;
+    };
 
-    interface BucketSort{
-        int[] sort(int[] items);
-    }
+    interface Worker {
+        SortResult sort(IntArray data);
+    };
 
-    interface ClientHandler{
-        string response(string s);
-    }
-
-
-}
+    interface Coordinator {
+        void registerWorker(Worker* worker);
+        SortResult sortData(IntArray data);
+    };
+};
