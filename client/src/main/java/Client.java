@@ -3,9 +3,11 @@ import Demo.*;
 
 public class Client {
     public static void main(String[] args) {
-        try (Communicator communicator = Util.initialize(args)) {
-            ObjectPrx coordinatorProxy = communicator.stringToProxy("Coordinator:default -p 10000");
-            Demo.CoordinatorPrx coordinator = Demo.CoordinatorPrx.checkedCast(coordinatorProxy);
+        try (Communicator communicator = Util.initialize(args,"config.client")) {
+            //ObjectPrx coordinatorProxy = communicator.stringToProxy("Coordinator:default -p 10000");
+            Demo.CoordinatorPrx coordinator = Demo.CoordinatorPrx.checkedCast(
+                    communicator.propertyToProxy("Coordinator.Proxy")).ice_twoway().ice_timeout(-1).ice_secure(false);
+            //Demo.CoordinatorPrx coordinator = Demo.CoordinatorPrx.checkedCast(coordinatorProxy);
             if (coordinator == null) {
                 throw new Error("Invalid proxy");
             }
