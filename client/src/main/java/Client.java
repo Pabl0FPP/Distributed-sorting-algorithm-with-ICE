@@ -18,6 +18,10 @@ public class Client {
                     17, 84, 31, 68, 65, 67, 77, 11, 32, 53, 1, 92, 87, 100, 58, 58, 37,
                     98, 25, 4, 16, 88, 21, 76, 66, 63, 16, 31, 11, 15, 52};
 
+
+            while(true){
+
+            }
             // Envía los datos al servidor coordinador para ordenar
             SortResult sortedData = coordinator.sortData(data);
 

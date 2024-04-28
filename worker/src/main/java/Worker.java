@@ -3,14 +3,14 @@ import com.zeroc.Ice.*;
 
 public class Worker {
     public static void main(String[] args) {
-        try (Communicator communicator = Util.initialize(args)) {
-            ObjectAdapter adapter = communicator.createObjectAdapterWithEndpoints("Worker", "default -p 0");
+        try (Communicator communicator = Util.initialize(args,"config.worker")) {
+            ObjectAdapter adapter = communicator.createObjectAdapter("Worker");
             //WorkerI worker = new WorkerI();
             //adapter.add(worker, Util.stringToIdentity("Worker"));
             adapter.activate();
 
-            ObjectPrx coordinatorProxy = communicator.stringToProxy("Coordinator:default -p 10000");
-            CoordinatorPrx coordinator = Demo.CoordinatorPrx.checkedCast(coordinatorProxy);
+            //ObjectPrx coordinatorProxy = communicator.stringToProxy("");
+            CoordinatorPrx coordinator = Demo.CoordinatorPrx.checkedCast(communicator.propertyToProxy("Coordinator.Proxy"));
             if (coordinator == null) {
                 throw new Error("Invalid proxy");
             }
