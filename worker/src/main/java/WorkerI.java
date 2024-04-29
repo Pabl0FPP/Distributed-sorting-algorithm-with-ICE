@@ -1,4 +1,4 @@
-/*
+
 import Demo.*;
 import com.zeroc.Ice.*;
 
@@ -13,46 +13,44 @@ public class WorkerI implements Demo.Worker {
 
 
     @Override
-    public SortResult sort(int[] data, Current current) {
-        int[] sortedData = bucketSort(data);
-        return null;
+    public int[] sort(int[] data, Current current) {
+        return mergeSort(data);
     }
 
-    private int[] bucketSort(int[] data) {
-        // Encuentra el valor máximo y mínimo en el arreglo de entrada
-        int maxVal = Integer.MIN_VALUE;
-        int minVal = Integer.MAX_VALUE;
-        for (int item : data) {
-            maxVal = Math.max(maxVal, item);
-            minVal = Math.min(minVal, item);
+    private int[] mergeSort(int[] data) {
+        if(data.length == 1){
+            return data;
+        }else {
+            int mid = data.length/2;
+
+            int[] part1 = partition(data, mid,0);
+            int[] part2 = partition(data,(mid+1),(mid+1));
+
+            int[] result1 = mergeSort(part1);
+            int[] result2 = mergeSort(part2);
+
+            return merge(result1,result2);
         }
 
-        // Calcula el rango de cada bucket
-        int bucketRange = (maxVal - minVal) / data.length + 1;
-
-        // Crea un arreglo de listas para las cubetas
-        List<Integer>[] buckets = new List[data.length];
-        for (int i = 0; i < data.length; i++) {
-            buckets[i] = new ArrayList<>();
-        }
-
-        // Coloca cada elemento en su respectiva bucket
-        for (int item : data) {
-            int index = (item - minVal) / bucketRange;
-            buckets[index].add(item);
-        }
-
-        // Ordena cada bucket y combina los resultados
-        int index = 0;
-        for (List<Integer> bucket : buckets) {
-            Collections.sort(bucket);
-            for (int item : bucket) {
-                data[index++] = item;
-            }
-        }
-
-        return data;
     }
+
+    private int[] partition(int[] a, int mid,int start){
+        int[] part = new int[mid];
+        for (int i = start; i < mid; i++) {
+            part[i] = a[i];
+        }
+        return part;
+    }
+
+    private int[] merge(int[] part1,int[] part2){
+
+        int[] mergedResult = new int[part1.length+part2.length];
+        for (int i = 0; i < mergedResult.length; i++) {
+            mergedResult[i] = Math.min(part1[i], part2[i]);
+        }
+
+        return mergedResult;
+    }
+
 }
 
- */

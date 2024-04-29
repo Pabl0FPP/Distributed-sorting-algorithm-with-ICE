@@ -8,7 +8,7 @@ module Demo {
     };
 
     interface Worker {
-        SortResult sort(IntArray data);
+        IntArray sort(IntArray data);
     };
 
     interface Coordinator {

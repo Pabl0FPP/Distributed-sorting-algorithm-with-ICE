@@ -1,5 +1,6 @@
 import Demo.*;
 import com.zeroc.Ice.*;
+import javafx.concurrent.Worker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +14,10 @@ import java.util.concurrent.Future;
 public class ServerCoordinatorI implements Demo.Coordinator {
     private List<WorkerPrx> workers = new ArrayList<>();
     private List<int[]> partialResults = new ArrayList<>();
+    private WorkerPrx workerPrx;
+    public ServerCoordinatorI(WorkerPrx w){
+        workerPrx = w;
+    }
 
     //registra el nodo
     @Override
@@ -27,12 +32,12 @@ public class ServerCoordinatorI implements Demo.Coordinator {
         int numWorkers = workers.size();
 
         // Crea un pool de hilos de tamaño fijo igual al número de trabajadores
-        ExecutorService executor = Executors.newFixedThreadPool(numWorkers);
+        ExecutorService executor = Executors.newFixedThreadPool(8);
         // Lista para almacenar los resultados futuros de los trabajadores
         List<Future<SortResult>> futures = new ArrayList<>();
 
         // Calcula el tamaño del chunk de datos para dividir sin duplicados
-        int chunkSize = (data.length + numWorkers - 1) / numWorkers;
+        int chunkSize = (data.length + numWorkers - 1);
         // Itera sobre cada trabajador
         for (int i = 0; i < numWorkers; i++) {
             // Calcula el índice de inicio del chunk para este trabajador
@@ -126,8 +131,11 @@ public class ServerCoordinatorI implements Demo.Coordinator {
 
         int index = 0;
         for (List<Integer> bucket : buckets) {
-            Collections.sort(bucket);
-            for (int item : bucket) {
+            int[] bucket2 = bucket.stream()
+                    .mapToInt(Integer::intValue)
+                    .toArray();
+            int[] result = workerPrx.sort(bucket2);
+            for (int item : result) {
                 data[index++] = item;
             }
         }
