@@ -11,6 +11,15 @@ subprojects {
     //
     // Both Client and Server projects share the Printer.ice Slice definitions
     //
+
+    sourceSets {
+        main {
+            resources {
+                srcDirs = ['src/main/resources']
+            }
+        }
+    }
+
     slice {
         java {
             files = [file("../Sorter.ice")]
