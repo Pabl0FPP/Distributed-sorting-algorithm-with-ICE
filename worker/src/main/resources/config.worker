@@ -1,3 +1,4 @@
-Worker.Endpoints=default -p 10023
+Worker.Endpoints=default -p 0
+Coordinator.Proxy=Coordinator:default -p 10000
 
 Ice.Default.Host=localhost

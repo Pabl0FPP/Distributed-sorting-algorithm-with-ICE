@@ -14,9 +14,8 @@ import java.util.concurrent.Future;
 public class ServerCoordinatorI implements Demo.Coordinator {
     private List<WorkerPrx> workers = new ArrayList<>();
     private List<int[]> partialResults = new ArrayList<>();
-    private WorkerPrx workerPrx;
-    public ServerCoordinatorI(WorkerPrx w){
-        workerPrx = w;
+    public ServerCoordinatorI(){
+
     }
 
     //registra el nodo
@@ -37,7 +36,7 @@ public class ServerCoordinatorI implements Demo.Coordinator {
         List<Future<SortResult>> futures = new ArrayList<>();
 
         // Calcula el tamaño del chunk de datos para dividir sin duplicados
-        int chunkSize = (data.length + numWorkers - 1);
+        int chunkSize = (data.length + numWorkers - 1)/numWorkers;
         // Itera sobre cada trabajador
         for (int i = 0; i < numWorkers; i++) {
             // Calcula el índice de inicio del chunk para este trabajador
@@ -46,6 +45,7 @@ public class ServerCoordinatorI implements Demo.Coordinator {
             int end = Math.min(start + chunkSize, data.length);
             // Crea un nuevo arreglo con el chunk de datos para este trabajador
             int[] chunk = Arrays.copyOfRange(data, start, end);
+            System.out.println("Hice los chunks");
 
             // Envía el chunk de datos al trabajador en un hilo separado
             Future<SortResult> future = executor.submit(() -> {
@@ -134,7 +134,7 @@ public class ServerCoordinatorI implements Demo.Coordinator {
             int[] bucket2 = bucket.stream()
                     .mapToInt(Integer::intValue)
                     .toArray();
-            int[] result = workerPrx.sort(bucket2);
+            int[] result = mergeSort(bucket2);
             for (int item : result) {
                 data[index++] = item;
             }
@@ -142,4 +142,52 @@ public class ServerCoordinatorI implements Demo.Coordinator {
 
         return data;
     }
+
+    private int[] mergeSort(int[] data) {
+        if (data.length <= 1) {
+            return data;
+        } else {
+            int mid = data.length / 2;
+
+            int[] part1 = partition(data, mid, 0);
+            int[] part2 = partition(data, data.length - mid, mid);
+
+            int[] result1 = mergeSort(part1);
+            int[] result2 = mergeSort(part2);
+
+            return merge(result1, result2);
+        }
+    }
+
+    private int[] partition(int[] a, int size, int start) {
+        int[] part = new int[size];
+        for (int i = 0; i < size; i++) {
+            part[i] = a[start + i];
+        }
+        return part;
+    }
+
+    private int[] merge(int[] part1, int[] part2) {
+        int[] mergedResult = new int[part1.length + part2.length];
+        int i = 0, j = 0, k = 0;
+
+        while (i < part1.length && j < part2.length) {
+            if (part1[i] < part2[j]) {
+                mergedResult[k++] = part1[i++];
+            } else {
+                mergedResult[k++] = part2[j++];
+            }
+        }
+
+        while (i < part1.length) {
+            mergedResult[k++] = part1[i++];
+        }
+
+        while (j < part2.length) {
+            mergedResult[k++] = part2[j++];
+        }
+
+        return mergedResult;
+    }
+
 }
