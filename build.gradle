@@ -30,12 +30,19 @@ subprojects {
     //
     repositories {
         mavenCentral()
+        google()
     }
     //
     // Both Client and Server depend only on Ice JAR
     //
     dependencies {
         implementation 'com.zeroc:ice:3.7.2'
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+        testImplementation 'org.mockito:mockito-core:3.12.4'
+    }
+
+    tasks.named('test', Test) {
+        useJUnitPlatform()
     }
     //
     // Create a JAR file with the appropriate Main-Class and Class-Path attributes

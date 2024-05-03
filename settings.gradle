@@ -10,3 +10,4 @@ rootProject.name = 'Distributed-sorting-algorithm-with-ICE'
 include 'server'
 include 'client'
 include 'worker'
+

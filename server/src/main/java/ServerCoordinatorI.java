@@ -1,6 +1,5 @@
 import Demo.*;
 import com.zeroc.Ice.*;
-import javafx.concurrent.Worker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,8 +11,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class ServerCoordinatorI implements Demo.Coordinator {
-    private List<WorkerPrx> workers = new ArrayList<>();
-    private List<int[]> partialResults = new ArrayList<>();
+    List<WorkerPrx> workers = new ArrayList<>();
+    List<int[]> partialResults = new ArrayList<>();
     public ServerCoordinatorI(){
 
     }
@@ -131,11 +130,8 @@ public class ServerCoordinatorI implements Demo.Coordinator {
 
         int index = 0;
         for (List<Integer> bucket : buckets) {
-            int[] bucket2 = bucket.stream()
-                    .mapToInt(Integer::intValue)
-                    .toArray();
-            int[] result = mergeSort(bucket2);
-            for (int item : result) {
+            Collections.sort(bucket);
+            for (int item : bucket) {
                 data[index++] = item;
             }
         }

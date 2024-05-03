@@ -22,10 +22,17 @@ public class Client {
             int[] data = readArrayFromFile(filePath);
 
             if (data != null) {
+                long startTime = System.currentTimeMillis();
+
                 SortResult sortedData = coordinator.sortData(data);
 
+                long endTime = System.currentTimeMillis();
+                long elapsedTime = endTime - startTime;
+
+                System.out.println("Tiempo de ejecución: " + elapsedTime + " milisegundos");
+
                 // Imprimir el resultado ordenado
-                System.out.println("Sorted array:");
+                System.out.println("arreglo ordenado:");
                 for (int value : sortedData.data) {
                     System.out.print(value + " ");
                 }
