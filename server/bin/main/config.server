@@ -1,0 +1,3 @@
+CoordinatorServer.Endpoints=default -p 10000
+
+Ice.Default.Host=localhost
